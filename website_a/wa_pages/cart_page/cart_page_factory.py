@@ -1,5 +1,5 @@
 from .cart_page import CartPage
-from website_a.wa_utilities import md_nav_constants as nc
+from website_a.wa_utilities import wa_nav_constants as nc
 from website_a.wa_pages import wa_pages
 
 

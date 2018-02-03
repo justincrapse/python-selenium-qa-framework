@@ -2,7 +2,7 @@ from website_a.wa_base_elements.wa_button import WaButton
 from website_a.wa_base_elements.wa_list import WaList
 from website_a.wa_base_elements.wa_web_element import WaWebElement
 from website_a.wa_base_objects.wa_base_page import WaBasePage
-from website_a.wa_utilities import md_nav_constants as nc
+from website_a.wa_utilities import wa_nav_constants as nc
 from common.utilities import web_constants as wc
 from website_a.wa_pages import wa_pages
 from wa_test_context import WaTestContext

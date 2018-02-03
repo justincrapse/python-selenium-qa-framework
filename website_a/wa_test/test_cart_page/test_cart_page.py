@@ -6,7 +6,7 @@ from website_a.wa_base_objects.wa_base_test_case import WaBaseTestCase
 from website_a.wa_pages import wa_pages
 from website_a.wa_utilities.log_handler import md_test_logger, take_screen_shot
 from wa_test_context import WaTestContext
-from website_a.wa_utilities import md_nav_constants as nc
+from website_a.wa_utilities import wa_nav_constants as nc
 
 
 class TestCartPage(WaBaseTestCase):
