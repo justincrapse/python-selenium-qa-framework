@@ -1,0 +1,156 @@
+# user-defined ignores:
+*.idea
+*.pyc
+*.cache
+*.pyi
+*.png
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+.DS_Store
+
+# Distribution / packaging
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# PyInstaller
+#  Usually these files are written by a python script from a template
+#  before PyInstaller builds the exe, so as to inject date/other infos into it.
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*,cover
+.hypothesis/
+
+# Translations
+*.mo
+*.pot
+
+# Django stuff:
+*.log
+local_settings.py
+
+# Flask stuff:
+instance/
+.webassets-cache
+
+# Scrapy stuff:
+.scrapy
+
+# Sphinx documentation
+docs/_build/
+
+# PyBuilder
+target/
+
+# IPython Notebook
+.ipynb_checkpoints
+
+# pyenv
+.python-version
+
+# celery beat schedule file
+celerybeat-schedule
+
+# dotenv
+.env
+
+# virtualenv
+venv/
+ENV/
+
+# Spyder project settings
+.spyderproject
+
+# Rope project settings
+.ropeproject
+build_artifacts/screenshots/base_element_interaction_2f71a56b90c20d66de7b2aef7f05e0fe.png
+build_artifacts/screenshots/base_element_interaction_9859b695f6b6010519b478d73b428da7.png
+build_artifacts/screenshots/None_f8790_00 SignUpPage first_month locate_element fail.png
+build_artifacts/screenshots/None_f75d3_01 StepOnePage btn_continue_one click fail.png
+build_artifacts/screenshots/None_f75d3_00 StepOnePage btn_continue_one wait_for_element_clickable fail.png
+build_artifacts/screenshots/None_ed986_00 StepOnePage on_page fail.png
+build_artifacts/screenshots/None_d7ebc_01 NavBar btn_join click fail.png
+build_artifacts/screenshots/None_d7ebc_00 NavBar btn_join wait_for_element_clickable fail.png
+build_artifacts/screenshots/None_c065e_02 SignUpPage fld_home_zip insert_text fail.png
+build_artifacts/screenshots/None_c065e_01 SignUpPage fld_home_zip locate_element fail.png
+build_artifacts/screenshots/None_c065e_00 SignUpPage fld_home_zip wait_for_element_present fail.png
+build_artifacts/screenshots/None_bfb26_01 NavBar btn_join click fail.png
+build_artifacts/screenshots/None_bfb26_00 NavBar btn_join wait_for_element_clickable fail.png
+build_artifacts/screenshots/None_b9cfc_00 StepOnePage on_page fail.png
+build_artifacts/screenshots/None_b533f_02 SignUpPage fld_password insert_text fail.png
+build_artifacts/screenshots/None_b533f_01 SignUpPage fld_password locate_element fail.png
+build_artifacts/screenshots/None_b533f_00 SignUpPage fld_password wait_for_element_present fail.png
+build_artifacts/screenshots/None_a7def_01 StepOnePage btn_modal_continue click fail.png
+build_artifacts/screenshots/None_a7def_00 StepOnePage btn_modal_continue wait_for_element_clickable fail.png
+build_artifacts/screenshots/None_a0022_02 SignUpPage fld_home_zip insert_text fail.png
+build_artifacts/screenshots/None_a0022_01 SignUpPage fld_home_zip locate_element fail.png
+build_artifacts/screenshots/None_a0022_00 SignUpPage fld_home_zip wait_for_element_present fail.png
+build_artifacts/screenshots/None_8461d_00 StepOnePage on_page fail.png
+build_artifacts/screenshots/None_79f81_02 SignUpPage fld_ref_code insert_text fail.png
+build_artifacts/screenshots/None_79f81_01 SignUpPage fld_ref_code locate_element fail.png
+build_artifacts/screenshots/None_79f81_00 SignUpPage fld_ref_code wait_for_element_present fail.png
+build_artifacts/screenshots/None_6c0af_02 SignUpPage fld_password insert_text fail.png
+build_artifacts/screenshots/None_6c0af_01 SignUpPage fld_password locate_element fail.png
+build_artifacts/screenshots/None_6c0af_00 SignUpPage fld_password wait_for_element_present fail.png
+build_artifacts/screenshots/None_6a110_02 SignUpPage fld_password insert_text fail.png
+build_artifacts/screenshots/None_6a110_01 SignUpPage fld_password locate_element fail.png
+build_artifacts/screenshots/None_6a110_00 SignUpPage fld_password wait_for_element_present fail.png
+build_artifacts/screenshots/None_6046f_00 StepOnePage on_page fail.png
+build_artifacts/screenshots/None_603bf_02 SignUpPage fld_ref_code insert_text fail.png
+build_artifacts/screenshots/None_603bf_01 SignUpPage fld_ref_code locate_element fail.png
+build_artifacts/screenshots/None_603bf_00 SignUpPage fld_ref_code wait_for_element_present fail.png
+build_artifacts/screenshots/None_5ecbf_00 StepOnePage on_page fail.png
+build_artifacts/screenshots/None_5696e_00 SignUpPage fld_password insert_text fail.png
+build_artifacts/screenshots/None_53875_01 NavBar btn_join js_click fail.png
+build_artifacts/screenshots/None_53875_00 NavBar btn_join wait_for_element_clickable fail.png
+build_artifacts/screenshots/None_32e7f_02 SignUpPage fld_ref_code insert_text fail.png
+build_artifacts/screenshots/None_32e7f_01 SignUpPage fld_ref_code locate_element fail.png
+build_artifacts/screenshots/None_32e7f_00 SignUpPage fld_ref_code wait_for_element_present fail.png
+build_artifacts/screenshots/None_2f7cf_02 SignUpPage fld_home_zip insert_text fail.png
+build_artifacts/screenshots/None_2f7cf_01 SignUpPage fld_home_zip locate_element fail.png
+build_artifacts/screenshots/None_2f7cf_00 SignUpPage fld_home_zip wait_for_element_present fail.png
+build_artifacts/screenshots/None_27c96_01 StepOnePage btn_modal_continue click fail.png
+build_artifacts/screenshots/None_27c96_00 StepOnePage btn_modal_continue wait_for_element_clickable fail.png
+build_artifacts/screenshots/None_20ac2_02 SignUpPage fld_password insert_text fail.png
+build_artifacts/screenshots/None_20ac2_01 SignUpPage fld_password locate_element fail.png
+build_artifacts/screenshots/None_20ac2_00 SignUpPage fld_password wait_for_element_present fail.png
+build_artifacts/screenshots/None_164e5_02 SignUpPage fld_ref_code insert_text fail.png
+build_artifacts/screenshots/None_164e5_01 SignUpPage fld_ref_code locate_element fail.png
+build_artifacts/screenshots/None_164e5_00 SignUpPage fld_ref_code wait_for_element_present fail.png
+build_artifacts/screenshots/None_157de_01 StepTwoPage btn_continue_two js_click fail.png
+build_artifacts/screenshots/None_157de_00 StepTwoPage btn_continue_two wait_for_element_clickable fail.png
+build_artifacts/screenshots/None_0c219_01 NavBar btn_join click fail.png
+build_artifacts/screenshots/None_0c219_00 NavBar btn_join wait_for_element_clickable fail.png
+build_artifacts/screenshots/None_097d9_00 StepOnePage on_page fail.png
