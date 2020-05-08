@@ -1,6 +1,6 @@
 from .cart_page import CartPage
-from website_a.wa_utilities import wa_nav_constants as nc
-from website_a.wa_pages import wa_pages
+from beatport.bp_utilities import bp_conf as nc
+from beatport.bp_pages import bp_pages
 
 
 class CartPageSmall(CartPage):
@@ -9,9 +9,9 @@ class CartPageSmall(CartPage):
 
     def navigate(self, nav_path=nc.CART_PAGE_VIA_NAV_BAR):
         if nav_path == nc.CART_PAGE_VIA_NAV_BAR:
-            nav_bar = wa_pages.NavBar(self.tc)
+            nav_bar = bp_pages.NavBar(self.tc)
             if not nav_bar.el_cart.is_clickable:
-                wa_pages.HomePage(self.tc).navigate()
+                bp_pages.HomePage(self.tc).navigate()
             # clear gritter notification if present
             nav_bar.el_cart.js_click()
         self.on_page()

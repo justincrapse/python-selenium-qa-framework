@@ -1,11 +1,11 @@
 import functools
 from time import time
 
-from wa_test_context import WaTestContext
-from website_a.wa_pages import wa_pages
+from bp_test_context import BPTestContext
+import bp_pages
 
 
-def take_screen_shot(tc: WaTestContext, *args):
+def take_screen_shot(tc: BPTestContext, *args):
     """ You'll want to keep a similar format here to how it currently is as it can uniquely identify a screenshot if you
     run the same test multiple times. """
     driver = tc.driver
@@ -21,7 +21,7 @@ def md_test_logger(func):
     @functools.wraps(func)
     def wrapper(self, *args, **kwargs):
         test_name = func.__name__
-        tc = kwargs['tc']  # type: WaTestContext
+        tc = kwargs['tc']  # type: BPTestContext
         tc.test_name = test_name
         tc.info_logger.info(f'\n{"/"*120}\nTest Start: {test_name}\n{"/"*120}')
 
@@ -50,7 +50,7 @@ def md_test_logger(func):
             tc.info_logger.info(f'Test Failed: {test_name}'.center(120, '/'))
             take_screen_shot(tc, 'TEST_FAILED')
             tc.syslog_logger.info(startup_message + '\n' + str(e))
-            if wa_pages.LoginPage(tc).is_on_page():
+            if bp_pages.LoginPage(tc).is_on_page():
                 raise ValueError(f'{str(e)} unexpected fail or redirect at login screen')
             raise e
     return wrapper
@@ -63,7 +63,7 @@ def page_logger(func):
      the logs or pass in -s to suppress the capture of the realtime console log output to see the logs real time. """
     @functools.wraps(func)
     def wrapper(self, *args, **kwargs):
-        tc = self.tc  # type: WaTestContext
+        tc = self.tc  # type: BPTestContext
         tc.logger_depth += 1
         func_name = func.__name__
         class_name = self.__class__.__name__
@@ -91,7 +91,7 @@ def element_logger(func):
     """ element logger will log the element method being wrapped along with how long execution took """
     @functools.wraps(func)
     def wrapper(self, *args, **kwargs):
-        tc = self.tc  # type: WaTestContext
+        tc = self.tc  # type: BPTestContext
         page_name = self.page.__class__.__name__
         func_name = func.__name__
         el_name = self.name

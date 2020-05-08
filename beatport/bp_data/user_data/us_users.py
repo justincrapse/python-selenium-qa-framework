@@ -1,6 +1,6 @@
-from website_a.wa_data.credit_cards import CREDIT_CARDS
-from website_a.wa_data.user_handler import JUSTIN_PC, TEAMCITY1, TEAMCITY2
-from website_a.wa_data.user_handler import update_dict
+from beatport.bp_data.credit_cards import CREDIT_CARDS
+from beatport.bp_data.user_handler import JUSTIN_PC, TEAMCITY1, TEAMCITY2
+from beatport.bp_data.user_handler import update_dict
 
 current_password = 'SuperSonic1234'
 

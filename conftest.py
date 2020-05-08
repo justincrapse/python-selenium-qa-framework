@@ -1,63 +1,30 @@
-"""
-Site codes:
-MD: Modere
-NG: Ngage
-SR: Shifting Retail
-ST: Stockist
-GS: Global Shop
-"""
-
 import os
-import platform
-import importlib
 
 import pytest
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-from website_a.wa_data.user_handler import set_user
-from wa_test_context import WaTestContext
 
-SCREEN_SHOT_PATH = '/some_path'
+from bp_test_context import BPTestContext
+import bp_utilities as bpu
+
 
 def pytest_addoption(parser):
-    parser.addoption('--site', action='store', default='MD', help='select which website to test (MD, NG, SR, ST, GS')
-    parser.addoption('--brow', action='store', default='FIREFOX', help='select browser driver')
-    parser.addoption('--size', action='store', default='LARGE', help='select screen size (SMALL, MEDIUM, LARGE)')
-    parser.addoption('--market', action='store', default='US', help='select market')
+    parser.addoption('--brow', action='store', default='CHROME', help='select browser driver')
     parser.addoption('--env', action='store', default='TEST', help='select test environment (DEV, TEST, STAGE, PROD')
-    parser.addoption('--user', action='store', default='MC', help='Select user type')
-    parser.addoption('--headless', action='store', default='False', help='run headless browser')
-    parser.addoption('--level', action='store', default='INFO', help='selects the logging level (INFO OR DEBUG)')
+    parser.addoption('--user', action='store', default='TEST_USER', help='Select user type')
 
 
 @pytest.fixture
 def env_config(request):
-    website = request.config.getoption('--site')
-    market_code = request.config.getoption('--market')
-    screen_size = request.config.getoption('--size')
     environment = request.config.getoption('--env')
     browser = request.config.getoption('--brow')
-    logging_level = request.config.getoption('--level')
     user_type = request.config.getoption('--user')
-    markets = importlib.import_module(f'website_a.wa_data.{website.lower()}_markets').MARKETS
-    base_url = markets[market_code][environment]
-    class_suffix = f'{market_code}_{screen_size}_{environment}'
-    screen_shot_path = SCREEN_SHOT_PATH
-    computer_name = platform.node()
-    user = set_user(market_code=market_code, computer_name=computer_name, user_type=user_type, env=environment)
 
-    test_context = WaTestContext(
-        website=website,
-        market_code=market_code,
-        screen_size=screen_size,
+    test_context = BPTestContext(
         environment=environment,
         browser=browser,
-        base_url=base_url,
-        user=user,
-        class_suffix=class_suffix,
-        screen_shot_path=screen_shot_path,
-        logging_level=logging_level,
-        computer_name=computer_name)
+        base_url=bpu.bp_conf.BASE_URL,
+        user=user_type)
     return test_context
 
 
@@ -65,8 +32,7 @@ def env_config(request):
 def driver(request, env_config):
     test_context = env_config
     browser = test_context.browser
-    size = test_context.screen_size
-    headless = request.config.getoption('--headless')
+    headless = False
     headless = True if headless == 'True' else False
 
     if browser == 'FIREFOX':
@@ -85,13 +51,8 @@ def driver(request, env_config):
         web_driver = webdriver.Edge()
     elif browser == 'SAFARI':
         web_driver = webdriver.Safari()
-
-    # set the window size
-    if size == 'LARGE':
-        web_driver.set_window_size(1920, 1080)
-        web_driver.set_window_position(0, 0)
-    elif size == 'SMALL':
-        web_driver.set_window_size(375, 667)
+    else:
+        web_driver = None
 
     # go to base url as default for all tests after setting up the driver:
     web_driver.get(test_context.base_url)
