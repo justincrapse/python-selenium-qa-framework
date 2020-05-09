@@ -5,7 +5,7 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 
 from bp_test_context import BPTestContext
-import bp_utilities as bpu
+import bp_utilities as bp_util
 
 
 def pytest_addoption(parser):
@@ -23,7 +23,7 @@ def env_config(request):
     test_context = BPTestContext(
         environment=environment,
         browser=browser,
-        base_url=bpu.bp_conf.BASE_URL,
+        base_url=bp_util.bp_conf.BASE_URL,
         user=user_type)
     return test_context
 
@@ -57,8 +57,11 @@ def driver(request, env_config):
     # go to base url as default for all tests after setting up the driver:
     web_driver.get(test_context.base_url)
 
+    failed = request.session.testsfailed  # this value is not quite reliable, so we check for a difference to be sure.
     yield web_driver
     # everything after yield will run after the tests run. This is pytest's version of teardown.
+    if request.session.testsfailed != failed:  # as long as it is not the same as initial value.
+        web_driver.save_screenshot(f'{bp_util.bp_conf.SCREENSHOT_DIR}\\my_screenshot.jpg')
     web_driver.quit()
 
 

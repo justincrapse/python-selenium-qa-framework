@@ -1,3 +1,4 @@
+import functools
 from time import sleep
 
 from selenium.webdriver.common.by import By
@@ -11,48 +12,40 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.remote.webdriver import WebDriver
 
 from common.base_objects.base_page import BasePage
-from common.utilities import web_constants as wc
+import common.utilities.element_selectors as es
+import common.utilities.wait_times as waits
+
 from bp_test_context import BPTestContext
 
 
 class BaseElement:
-    def __init__(self, page, name, locator, locator_type):
+    """ Currently diving into the 8th circle of decorator hell to use a better structural design for applying wait
+    times to most of the interactive function. Will be updated soon. """
+    def __init__(self, page, locator, locator_type=es.BY_XPATH):
         self.page = page  # type: BasePage
-        self.name = name
         self.driver = page.driver  # type: WebDriver
         self.tc = page.tc  # type: BPTestContext
         self.locator = locator
         self.locator_type = locator_type
-        self.wait_time = 15
-        self.spinner_wait_time = 65
+        self.wait_time = waits.DEFAULT
 
     def get_href(self):
         elem = self.locate_element()
         url = elem.get_attribute("href")
         return url
 
-    def click(self, wait_time=None, return_bool=False, suppress=False):
-        wait_time = wait_time if wait_time else self.wait_time
-        self.wait_for_element_clickable(wait_time=wait_time, return_bool=return_bool, suppress=suppress)
-        web_element = self.locate_element(wait_time=wait_time, return_bool=return_bool, suppress=suppress)
+    def click(self, wait_time=None):
+        wait_time = wait_time if wait_time else self.page.wait_time
+        web_element = self.locate_element(wait_time=wait_time)
         web_element.click()
         return self
 
-    def click_if_present(self, suppress=True, wait_time=None):
-        wait_time = wait_time if wait_time else self.page.wait_time
-        self.click(suppress=suppress, wait_time=wait_time)
-
-    def element_on_page(self, wait_time=None, return_bool=False):
-        """ determine if on_page by element and return the page object this elements belongs to """
+    def element_on_page(self, wait_time=None):
         wait_time = wait_time if wait_time else self.page.wait_time
         try:
             self.locate_element(wait_time=wait_time)
-            if return_bool:
-                return True
             return self.page
         except TimeoutException:
-            if return_bool:
-                return False
             raise TimeoutException(msg=f'Could not determine on page by page element locator: "{self.locator}"')
 
     def get_attribute_value(self, attribute, wait_time=None):
@@ -111,17 +104,16 @@ class BaseElement:
         sleep(time)
         return self
 
-    def is_present(self, wait_for_present=True, wait_time=None):
+    def is_present(self, wait_time=None):
         wait_time = wait_time if wait_time else self.wait_time
-        return self.locate_element(wait_for_present=wait_for_present, wait_time=wait_time, return_bool=True)
+        return self.locate_element(wait_time=wait_time)
 
     def is_clickable(self, wait_time=None):
         wait_time = wait_time if wait_time else self.wait_time
         return self.wait_for_element_clickable(return_bool=True, wait_time=wait_time)
 
     def is_element_on_page(self, wait_time=None):
-        wait_time = wait_time if wait_time else self.wait_time
-        return self.element_on_page(return_bool=True, wait_time=wait_time)
+        return self.element_on_page(wait_time=wait_time)
 
     def is_stale(self, wait_time=None):
         wait_time = wait_time if wait_time else self.wait_time
@@ -143,27 +135,21 @@ class BaseElement:
             raise
         return self
 
-    def locate_element(self, wait_for_present=True, wait_time=None, return_bool=False, suppress=False):
+    def locate_element(self, wait_time=None):
         wait_time = wait_time if wait_time else self.wait_time
-        if wait_for_present:
-            self.wait_for_element_present(wait_time=wait_time, return_bool=return_bool, suppress=suppress)
+        self.wait_for_element_clickable(wait_time=wait_time)
         try:
-            if self.locator_type == 'xpath':
+            if self.locator_type == es.BY_XPATH:
                 web_element = self.driver.find_element_by_xpath(self.locator)
-            elif self.locator_type == 'id':
+            elif self.locator_type == es.BY_ID:
                 web_element = self.driver.find_element_by_id(self.locator)
-            elif self.locator_type == 'css':
+            elif self.locator_type == es.BY_CSS:
                 web_element = self.driver.find_element_by_css_selector(self.locator)
             else:
                 raise Exception("Need to define xpath, id, or css selector type for your element locator")
-            if return_bool:
-                return True
             return web_element
         except NoSuchElementException:
-            if return_bool or suppress:
-                return False
-            raise NoSuchElementException("Element not found. Locator: {} Locator Type: {} ".format(self.locator,
-                                                                                                   self.locator_type))
+            raise NoSuchElementException(f'Element not found. Locator:{self.locator} Locator Type:{self.locator_type}')
 
     def locate_elements(self, wait_for_element_present=True):
         if wait_for_element_present:
@@ -214,11 +200,11 @@ class BaseElement:
     def wait_for_element_present(self, wait_time=None, return_bool=False, suppress=False):
         wait_time = wait_time if wait_time else self.wait_time
         try:
-            if self.locator_type == wc.BY_XPATH:
+            if self.locator_type == es.BY_XPATH:
                 WebDriverWait(self.driver, wait_time).until(ec.presence_of_element_located((By.XPATH, self.locator)))
-            elif self.locator_type == wc.BY_ID:
+            elif self.locator_type == es.BY_ID:
                 WebDriverWait(self.driver, wait_time).until(ec.presence_of_element_located((By.ID, self.locator)))
-            elif self.locator_type == wc.BY_CSS:
+            elif self.locator_type == es.BY_CSS:
                 WebDriverWait(self.driver, wait_time).until(
                     ec.presence_of_element_located((By.CSS_SELECTOR, self.locator)))
             if return_bool:
@@ -250,11 +236,11 @@ class BaseElement:
     def wait_for_element_visible(self, wait_time=None, return_bool=False):
         wait_time = wait_time if wait_time else self.wait_time
         try:
-            if self.locator_type == wc.BY_XPATH:
+            if self.locator_type == es.BY_XPATH:
                 WebDriverWait(self.driver, wait_time).until(ec.visibility_of_element_located((By.XPATH, self.locator)))
-            elif self.locator_type == wc.BY_ID:
+            elif self.locator_type == es.BY_ID:
                 WebDriverWait(self.driver, wait_time).until(ec.visibility_of_element_located((By.ID, self.locator)))
-            elif self.locator_type == wc.BY_CSS:
+            elif self.locator_type == es.BY_CSS:
                 WebDriverWait(self.driver, wait_time).until(ec.visibility_of_element_located(
                     (By.CSS_SELECTOR, self.locator)))
             if return_bool:
@@ -268,12 +254,12 @@ class BaseElement:
     def wait_for_element_invisible(self, wait_time=None, return_bool=False):
         wait_time = wait_time if wait_time else self.wait_time
         try:
-            if self.locator_type == wc.BY_XPATH:
+            if self.locator_type == es.BY_XPATH:
                 WebDriverWait(self.driver, wait_time).until(ec.invisibility_of_element_located((By.XPATH,
                                                                                                 self.locator)))
-            elif self.locator_type == wc.BY_ID:
+            elif self.locator_type == es.BY_ID:
                 WebDriverWait(self.driver, wait_time).until(ec.invisibility_of_element_located((By.ID, self.locator)))
-            elif self.locator_type == wc.BY_CSS:
+            elif self.locator_type == es.BY_CSS:
                 WebDriverWait(self.driver, wait_time).until(ec.invisibility_of_element_located(
                     (By.CSS_SELECTOR, self.locator)))
             if return_bool:
@@ -288,11 +274,11 @@ class BaseElement:
         if self.tc.browser == 'EDGE':
             return True
         try:
-            if self.locator_type == wc.BY_XPATH:
+            if self.locator_type == es.BY_XPATH:
                 WebDriverWait(self.driver, wait_time).until(ec.element_to_be_clickable((By.XPATH, self.locator)))
-            elif self.locator_type == wc.BY_ID:
+            elif self.locator_type == es.BY_ID:
                 WebDriverWait(self.driver, wait_time).until(ec.element_to_be_clickable((By.ID, self.locator)))
-            elif self.locator_type == wc.BY_CSS:
+            elif self.locator_type == es.BY_CSS:
                 WebDriverWait(self.driver, wait_time).until(ec.element_to_be_clickable((By.CSS_SELECTOR, self.locator)))
             if return_bool:
                 return True
