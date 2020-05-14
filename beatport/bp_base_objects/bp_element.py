@@ -1,4 +1,4 @@
-from common.base_elements.base_element import BaseElement
+from base_objects.base_element import BaseElement
 import common.utilities.element_selectors as es
 
 

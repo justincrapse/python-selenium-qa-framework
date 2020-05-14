@@ -1,7 +1,5 @@
-import functools
 from time import sleep
 
-from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import WebDriverWait
@@ -27,73 +25,70 @@ class BaseElement:
         self.tc = page.tc  # type: BPTestContext
         self.locator = locator
         self.locator_type = locator_type
-        self.wait_time = waits.DEFAULT
 
-    def get_href(self):
-        elem = self.locate_element()
+    def get_href(self, wait_time=waits.DEFAULT):
+        elem = self.locate_element(wait_time=wait_time)
         url = elem.get_attribute("href")
         return url
 
-    def click(self, wait_time=None):
-        wait_time = wait_time if wait_time else self.page.wait_time
+    def click(self, wait_time=waits.DEFAULT):
         web_element = self.locate_element(wait_time=wait_time)
         web_element.click()
         return self
 
-    def element_on_page(self, wait_time=None):
-        wait_time = wait_time if wait_time else self.page.wait_time
+    def element_on_page(self, wait_time=waits.DEFAULT):
         try:
             self.locate_element(wait_time=wait_time)
             return self.page
         except TimeoutException:
             raise TimeoutException(msg=f'Could not determine on page by page element locator: "{self.locator}"')
 
-    def get_attribute_value(self, attribute, wait_time=None):
+    def get_attribute_value(self, attribute, wait_time=waits.DEFAULT):
         web_el = self.locate_element(wait_time=wait_time)
         return web_el.get_attribute(attribute)
 
-    def get_text(self):
-        web_el = self.locate_element()
+    def get_text(self, wait_time=waits.DEFAULT):
+        web_el = self.locate_element(wait_time=wait_time)
         return web_el.text
 
-    def get_value(self, wait_time=None):
+    def get_value(self, wait_time=waits.DEFAULT):
         web_el = self.locate_element(wait_time=wait_time)
         return web_el.get_attribute('value')
 
-    def hover_over_element(self):
-        web_el = self.locate_element()
+    def hover_over_element(self, wait_time=waits.DEFAULT):
+        web_el = self.locate_element(wait_time=wait_time)
         hover = ActionChains(self.driver).move_to_element(web_el)
         hover.perform()
         return self
 
-    def hover_over_and_click(self):
-        web_el = self.locate_element()
+    def hover_over_and_click(self, wait_time=waits.DEFAULT):
+        web_el = self.locate_element(wait_time=wait_time)
         hover = ActionChains(self.driver).move_to_element(web_el).click()
         hover.perform()
         return self
 
-    def hover_over_element_with_offset(self, x=1, y=1):
-        web_el = self.locate_element()
+    def hover_over_element_with_offset(self, x=1, y=1, wait_time=waits.DEFAULT):
+        web_el = self.locate_element(wait_time=wait_time)
         ActionChains(self.driver).move_to_element_with_offset(web_el, x, y).perform()
         return self
 
-    def insert_text(self, text, clear_text_first=True):
-        web_el = self.locate_element()
+    def insert_text(self, text, clear_text_first=True, wait_time=waits.DEFAULT):
+        web_el = self.locate_element(wait_time=wait_time)
         if clear_text_first:
             web_el.clear()
         web_el.send_keys(text)
         return self
 
-    def insert_text_and_hit_enter(self, text_string, clear_text_first=True):
-        web_el = self.locate_element()
+    def insert_text_and_hit_enter(self, text_string, clear_text_first=True, wait_time=waits.DEFAULT):
+        web_el = self.locate_element(wait_time=wait_time)
         if clear_text_first:
             web_el.clear()
         web_el.send_keys(text_string)
         web_el.send_keys(Keys.ENTER)
         return self
 
-    def insert_text_and_hit_tab(self, text_string, clear_text_first=True):
-        web_el = self.locate_element()
+    def insert_text_and_hit_tab(self, text_string, clear_text_first=True, wait_time=waits.DEFAULT):
+        web_el = self.locate_element(wait_time=wait_time)
         if clear_text_first:
             web_el.clear()
         web_el.send_keys(text_string)
@@ -104,28 +99,22 @@ class BaseElement:
         sleep(time)
         return self
 
-    def is_present(self, wait_time=None):
-        wait_time = wait_time if wait_time else self.wait_time
-        return self.locate_element(wait_time=wait_time)
+    def is_present(self, wait_time=waits.DEFAULT):
+        return self.locate_element(wait_time=wait_time, return_bool=True)
 
-    def is_clickable(self, wait_time=None):
-        wait_time = wait_time if wait_time else self.wait_time
+    def is_clickable(self, wait_time=waits.DEFAULT):
         return self.wait_for_element_clickable(return_bool=True, wait_time=wait_time)
 
-    def is_element_on_page(self, wait_time=None):
+    def is_element_on_page(self, wait_time=waits.DEFAULT):
         return self.element_on_page(wait_time=wait_time)
 
-    def is_stale(self, wait_time=None):
-        wait_time = wait_time if wait_time else self.wait_time
+    def is_stale(self, wait_time=waits.DEFAULT):
         return self.wait_for_staleness(wait_time=wait_time, return_bool=True)
 
-    def is_visible(self, wait_time=None, spinner=True):
-        if spinner:
-            wait_time = wait_time if wait_time else self.wait_time
+    def is_visible(self, wait_time=waits.DEFAULT):
         return self.wait_for_element_visible(wait_time=wait_time, return_bool=True)
 
-    def js_click(self, wait_time=None):
-        wait_time = wait_time if wait_time else self.wait_time
+    def js_click(self, wait_time=waits.DEFAULT):
         self.wait_for_element_clickable(wait_time=wait_time)
         # web_element = self.tc.driver.find_element_by_xpath(self.locator)
         web_element = self.locate_element(wait_time=wait_time)
@@ -135,8 +124,7 @@ class BaseElement:
             raise
         return self
 
-    def locate_element(self, wait_time=None):
-        wait_time = wait_time if wait_time else self.wait_time
+    def locate_element(self, wait_time=waits.DEFAULT, return_bool=False):
         self.wait_for_element_clickable(wait_time=wait_time)
         try:
             if self.locator_type == es.BY_XPATH:
@@ -147,8 +135,12 @@ class BaseElement:
                 web_element = self.driver.find_element_by_css_selector(self.locator)
             else:
                 raise Exception("Need to define xpath, id, or css selector type for your element locator")
+            if return_bool:
+                return True
             return web_element
         except NoSuchElementException:
+            if return_bool:
+                return False
             raise NoSuchElementException(f'Element not found. Locator:{self.locator} Locator Type:{self.locator_type}')
 
     def locate_elements(self, wait_for_element_present=True):
@@ -168,8 +160,8 @@ class BaseElement:
                                                                                                     self.locator_type))
         return web_elements
 
-    def scroll_to_element_and_return_location(self):
-        element = self.locate_element()
+    def scroll_to_element_and_return_location(self, wait_time=waits.DEFAULT):
+        element = self.locate_element(wait_time=wait_time)
         location = element.location_once_scrolled_into_view
         return location
 
@@ -180,7 +172,6 @@ class BaseElement:
         return self
 
     def submit(self, wait_time=None):
-        wait_time = wait_time if wait_time else self.wait_time
         self.wait_for_element_visible()
         element = self.locate_element(wait_time=wait_time)
         element.submit()
@@ -198,15 +189,8 @@ class BaseElement:
             raise ValueError(f'String "{string}" was not found in text "{text}"')
 
     def wait_for_element_present(self, wait_time=None, return_bool=False, suppress=False):
-        wait_time = wait_time if wait_time else self.wait_time
         try:
-            if self.locator_type == es.BY_XPATH:
-                WebDriverWait(self.driver, wait_time).until(ec.presence_of_element_located((By.XPATH, self.locator)))
-            elif self.locator_type == es.BY_ID:
-                WebDriverWait(self.driver, wait_time).until(ec.presence_of_element_located((By.ID, self.locator)))
-            elif self.locator_type == es.BY_CSS:
-                WebDriverWait(self.driver, wait_time).until(
-                    ec.presence_of_element_located((By.CSS_SELECTOR, self.locator)))
+            WebDriverWait(self.driver, wait_time).until(ec.presence_of_element_located((self.locator_type, self.locator)))
             if return_bool:
                 return True
         except TimeoutException:
@@ -215,7 +199,6 @@ class BaseElement:
             raise TimeoutException(msg=f'Element not found. xpath: {self.locator}')
 
     def wait_for_staleness(self, wait_time=10, return_bool=False):
-        wait_time = wait_time if wait_time else self.wait_time
         if self.is_present(wait_time=2):
             try:
                 element = self.locate_element(wait_time=2)
@@ -234,15 +217,9 @@ class BaseElement:
                 return False
 
     def wait_for_element_visible(self, wait_time=None, return_bool=False):
-        wait_time = wait_time if wait_time else self.wait_time
         try:
-            if self.locator_type == es.BY_XPATH:
-                WebDriverWait(self.driver, wait_time).until(ec.visibility_of_element_located((By.XPATH, self.locator)))
-            elif self.locator_type == es.BY_ID:
-                WebDriverWait(self.driver, wait_time).until(ec.visibility_of_element_located((By.ID, self.locator)))
-            elif self.locator_type == es.BY_CSS:
-                WebDriverWait(self.driver, wait_time).until(ec.visibility_of_element_located(
-                    (By.CSS_SELECTOR, self.locator)))
+            WebDriverWait(self.driver, wait_time).until(ec.visibility_of_element_located(
+                (self.locator_type, self.locator)))
             if return_bool:
                 return True
         except TimeoutException:
@@ -252,16 +229,9 @@ class BaseElement:
         return self
 
     def wait_for_element_invisible(self, wait_time=None, return_bool=False):
-        wait_time = wait_time if wait_time else self.wait_time
         try:
-            if self.locator_type == es.BY_XPATH:
-                WebDriverWait(self.driver, wait_time).until(ec.invisibility_of_element_located((By.XPATH,
-                                                                                                self.locator)))
-            elif self.locator_type == es.BY_ID:
-                WebDriverWait(self.driver, wait_time).until(ec.invisibility_of_element_located((By.ID, self.locator)))
-            elif self.locator_type == es.BY_CSS:
-                WebDriverWait(self.driver, wait_time).until(ec.invisibility_of_element_located(
-                    (By.CSS_SELECTOR, self.locator)))
+            WebDriverWait(self.driver, wait_time).until(ec.invisibility_of_element_located(
+                (self.locator_type, self.locator)))
             if return_bool:
                 return True
         except TimeoutException:
@@ -270,16 +240,10 @@ class BaseElement:
             raise TimeoutException(msg=f'Element not invisible (still visible.) xpath: {self.locator}')
 
     def wait_for_element_clickable(self, wait_time=None, return_bool=False, suppress=False):
-        wait_time = wait_time if wait_time else self.wait_time
         if self.tc.browser == 'EDGE':
             return True
         try:
-            if self.locator_type == es.BY_XPATH:
-                WebDriverWait(self.driver, wait_time).until(ec.element_to_be_clickable((By.XPATH, self.locator)))
-            elif self.locator_type == es.BY_ID:
-                WebDriverWait(self.driver, wait_time).until(ec.element_to_be_clickable((By.ID, self.locator)))
-            elif self.locator_type == es.BY_CSS:
-                WebDriverWait(self.driver, wait_time).until(ec.element_to_be_clickable((By.CSS_SELECTOR, self.locator)))
+            WebDriverWait(self.driver, wait_time).until(ec.element_to_be_clickable((self.locator_type, self.locator)))
             if return_bool:
                 return True
             return self
