@@ -1,14 +1,17 @@
 from common.base_objects.base_test_case import BaseTestCase
+import bp_pages
 
 
 class BPBaseTestCase(BaseTestCase):
     """ Shared functions across many pages can be written here for easy access from where the test method is written """
     @staticmethod
-    def bp_login(tc, username, password):
-        pass
+    def login(tc, username=None, password=None):
+        username = username if username else tc.username
+        password = password if password else tc.password
+        bp_pages.BPHeader(tc).log_in(username=username, password=password)
 
     @staticmethod
-    def bp_logout(tc):
+    def logout(tc):
         pass
 
     @staticmethod

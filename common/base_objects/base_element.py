@@ -102,7 +102,7 @@ class BaseElement:
     def is_present(self, wait_time=waits.DEFAULT):
         return self.locate_element(wait_time=wait_time, return_bool=True)
 
-    def is_clickable(self, wait_time=waits.DEFAULT):
+    def is_clickable(self, wait_time=waits.DEFAULT) -> bool:
         return self.wait_for_element_clickable(return_bool=True, wait_time=wait_time)
 
     def is_element_on_page(self, wait_time=waits.DEFAULT):

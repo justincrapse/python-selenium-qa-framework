@@ -10,5 +10,10 @@ class TestSamples(BPBaseTestCase):
         home_page.search_field.click(50)
         assert home_page.on_page()
 
+    def test_log_in(self, tc):
+        nav_header = bp_pages.BPHeader(tc)
+        self.login(tc)
+        assert nav_header.account_icon.is_clickable()
+
     def test_track_search(self, tc):
-        home_page = bp_pages.HomePage(tc)
+        pass
